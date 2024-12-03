@@ -141,14 +141,6 @@ footer p {
     font-size: 16pt;
 }
 
-/*
-Ovo je boiler-plate, kako bi se videlo da li base.html izgleda dobro
-Izbrisati nakon rada
-*/
-.main {
-    height: 1200px;
-}
-
 .search-results {
     position: absolute;
     width: 745px;

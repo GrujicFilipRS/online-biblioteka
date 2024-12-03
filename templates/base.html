@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="static/css/base.css">
     <link rel="stylesheet" href="https://use.typekit.net/hct2xrr.css">
-    <title>Online biblioteka</title>
+    <title>{{ title }}</title>
 </head>
 <body>
 <nav>
     <a class="title-a" href="./">ONLINE<br>BIBLIOTEKA</a>
     <div class="search-bar-cont">
         <div class="search-bar">
-            <div class="search-ico"><img src="../img/search-ico.png" alt=""></div>
+            <div class="search-ico"><img src="../static/images/search-ico.png" alt=""></div>
             <div class="input-bar"><input id="search-input" placeholder="Search..." type="text"></div>
         </div>
     </div>
@@ -67,9 +67,14 @@
         </div>
     </div>
 </div>
+</body>
 
-<!-- Ovde ide kod specifične stranice (npr. index.html, login.html...) -->
-<div class="main">
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<div class="quote">
 
 </div>
 
@@ -78,5 +83,4 @@
 </footer>
 
 <script src="../js/base.js"></script>
-</body>
 </html>
