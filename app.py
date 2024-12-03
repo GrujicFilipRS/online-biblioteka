@@ -1,4 +1,4 @@
-from flask import (Flask, render_template, redirect, render_template, redirect, request, render_template_string)
+from flask import Flask, render_template, redirect, render_template, redirect, request, render_template_string, g
 from flask_login import (LoginManager, login_user, login_required, logout_user, current_user)
 from flask_restful import reqparse, abort, Api, Resource
 
@@ -34,6 +34,13 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
+@app.before_request
+def handle_search():
+    g.search_form = SearchForm()
+    if g.search_form.validate_on_submit():
+        return redirect(f"http://{HOST}:{PORT}/search/{g.search_form.search.data}")
+
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -43,9 +50,6 @@ def logout():
 
 @app.route('/sign_in', methods=['GET', 'POST'])
 def sign_in():
-    search_form = SearchForm()
-    if search_form.validate_on_submit():
-        return redirect(f"/search/{search_form.search.data}")
     sign_in_form = UserSignInForm()
     if sign_in_form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -58,21 +62,18 @@ def sign_in():
             title="Sign In",
             message="Incorrect email or password",
             sign_in_form=sign_in_form,
-            search_form=search_form
+            search_form=g.search_form
         )
     return render_template(
         "sign_in_user.html",
         title="Sign In",
         sign_in_form=sign_in_form,
-        search_form=search_form
+        search_form=g.search_form
     )
 
 
 @app.route('/sign_up', methods=['GET', 'POST'])
 def sign_up():
-    search_form = SearchForm()
-    if search_form.validate_on_submit():
-        return redirect(f"search/{search_form.search.data}")
     sign_up_form = UserSignUpForm()
     if sign_up_form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -80,7 +81,7 @@ def sign_up():
             return render_template(
                 "sign_up_user.html",
                 title="Sign In",
-                search_form=search_form,
+                search_form=g.search_form,
                 message="There is already an account with that email!",
                 sign_up_form=sign_up_form
             )
@@ -88,7 +89,7 @@ def sign_up():
             return render_template(
                 "sign_up_user.html",
                 title="Sign In",
-                search_form=search_form,
+                search_form=g.search_form,
                 message="There is already an account with that nickname!",
                 sign_up_form=sign_up_form
             )
@@ -106,22 +107,17 @@ def sign_up():
     return render_template(
         "sign_up_user.html",
         title="Sign Up",
-        search_form=search_form,
+        search_form=g.search_form,
         sign_up_form=sign_up_form
     )
 
 
 @app.route('/search/<string:search>', methods=["GET", "POST"])
-def search(search: str):
-    search_form = SearchForm()
-    if search_form.validate_on_submit():
-        print("Trying to search on search page")
-        return redirect(f"http://{HOST}:{PORT}/search/{search_form.search.data}")
-
+def search(search_text: str):
     ids = []
-    search_token = tokenize(search)
-    for article_id, article_token in app.book_index.items():
-        num_matching_words = len(search_token & article_token)
+    search_token = tokenize(search_text)
+    for article_id, book_token in app.book_index.items():
+        num_matching_words = len(search_token & book_token)
         if num_matching_words > 0:
             ids.append((article_id, num_matching_words))
     ids.sort(key=lambda x: x[1], reverse=True)
@@ -129,7 +125,7 @@ def search(search: str):
 
     sess = db_session.create_session()
     articles = sess.query(Book).filter(Book.id.in_(ids)).all()
-    return render_template("search_results.html", articles=articles, search_form=search_form)
+    return render_template("search_results.html", articles=articles, search_form=g.search_form)
 
 
 @app.route('/library', methods=["GET", "POST"])
@@ -145,21 +141,17 @@ def library_book(book_id: str):
         return render_template("book.html",
                                answer=False,
                                book=book,
-                               search_form=search_form)
+                               search_form=g.search_form)
 
     return render_template("book.html",
                            answer=True,
                            book=book,
-                           search_form=search_form)
+                           search_form=g.search_form)
 
 
 @app.route('/')
 def index():
-    search_form = SearchForm()
-    if search_form.validate_on_submit():
-        return redirect(f"http://{HOST}:{PORT}/search/{search_form.search.data}")
-
-    return render_template("base.html", title="Library", search_form=search_form)
+    return render_template("base.html", title="Library", search_form=g.search_form)
 
 
 def main() -> None:
