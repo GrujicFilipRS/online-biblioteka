@@ -114,13 +114,17 @@
 }
 
 .lek-left .lek-title {
-    font-size: 24pt;
+    font-size: 20pt;
     font-weight: 700;
     margin-top: 10px;
 }
 
 .lek-title, .lek-author {
     margin-left: 10px;
+}
+
+.lek-desc {
+    font-size: 11pt;
 }
 
 .lek-author {

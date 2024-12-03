@@ -151,8 +151,7 @@ def library_book(book_id: str):
 
 @app.route('/')
 def index():
-    return render_template("index.html", title="Library", search_form=g.search_form)
-
+    return render_template("index.html", title="Library", search_form=g.search_form, )
 
 def main() -> None:
     db_session.global_init("db/library.sqlite")
