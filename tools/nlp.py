@@ -1,5 +1,4 @@
 from typing import FrozenSet
-
 from nltk import word_tokenize
 from nltk.stem.snowball import EnglishStemmer
 

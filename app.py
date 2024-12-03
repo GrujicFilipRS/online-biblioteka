@@ -10,7 +10,7 @@ from forms.search import SearchForm
 from forms.user import UserSignInForm, UserSignUpForm
 
 from datetime import datetime, timedelta
-from tools import *
+from tools.nlp import tokenize
 
 template_dir = "templates"
 static_dir = "static"
@@ -135,6 +135,22 @@ def search(search: str):
 @app.route('/library', methods=["GET", "POST"])
 def library():
     return redirect('/')
+
+
+@app.route('/library/<string:book_link>', methods=["GET", "POST"])
+def library_book(book_id: str):
+    db_sess = db_session.create_session()
+    book = db_sess.query(Book).filter(Book.id == book_id).first()
+    if book is None:
+        return render_template("book.html",
+                               answer=False,
+                               book=book,
+                               search_form=search_form)
+
+    return render_template("book.html",
+                           answer=True,
+                           book=book,
+                           search_form=search_form)
 
 
 @app.route('/')
