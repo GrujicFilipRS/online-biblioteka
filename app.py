@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, render_template, redirect, request, render_template_string, g
-from flask_login import (LoginManager, login_user, login_required, logout_user, current_user)
+from flask_login import (LoginManager, login_user,
+                         login_required, logout_user, current_user)
 from flask_restful import reqparse, abort, Api, Resource
 
 from data import db_session
@@ -12,11 +13,17 @@ from forms.user import UserLogInForm, UserSignUpForm
 from datetime import datetime, timedelta
 from tools.nlp import tokenize
 
+
+from requests import get as requests_get
+import conf
+import json
+
+
 template_dir = "templates"
 static_dir = "static"
 app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.json.sort_keys = False
-app.config["SECRET_KEY"] = "dfaasdjkfajsdkfjaklsdhjklfasjhdk"
+app.config["SECRET_KEY"] = conf.SECRET_KEY
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
 app.book_index = {}
@@ -36,6 +43,26 @@ def load_user(user_id):
 
 @app.before_request
 def handle_search():
+
+    # //made by @yxzhin with <3 03.12.2024. ^^
+    # //#hellokittysupremacy #finelcomeback
+
+    response = requests_get(
+        url="https://api.api-ninjas.com/v1/quotes",
+        headers={"X-Api-Key": conf.API_KEY_QUOTES},
+    )
+
+    quote = dict()
+
+    if response.status_code != 200:
+        quote["quote"] = "error loading a quote. :( #yxzhinCodeMoment"
+        quote["author"] = ""
+
+    quote = json.loads(response.text)[0]
+    g.quote = quote
+
+    # //end of my part
+
     g.search_form = SearchForm()
     if g.search_form.validate_on_submit():
         return redirect(f"http://{HOST}:{PORT}/search/{g.search_form.search.data}")
@@ -53,7 +80,8 @@ def login_page():
     login_form = UserLogInForm()
     if login_form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.nickname == login_form.nickname.data).first()
+        user = db_sess.query(User).filter(
+            User.nickname == login_form.nickname.data).first()
         if user and user.check_password(login_form.password.data):
             login_user(user, remember=login_form.remember_me.data)
             return redirect('/')
@@ -166,13 +194,16 @@ def index():
         [bookToDict(book) for book in db_sess.query(Book).filter(Book.grade == i).limit(5).all()] for i in range(1, 5)
     ]
     return render_template("index.html",
+                           quote=g.quote["quote"],
+                           author=g.quote["author"],
                            title="Online biblioteka",
                            search_form=g.search_form,
                            books=books)
 
 
 def bookToDict(book: Book) -> dict:
-    author = db_session.create_session().query(Author).filter(Author.id == book.author_id).first()
+    author = db_session.create_session().query(
+        Author).filter(Author.id == book.author_id).first()
     return {
         "id": book.id,
         "title": book.title,
@@ -191,7 +222,8 @@ def bookToDict(book: Book) -> dict:
 
 def addBook(book: dict) -> None:
     db_sess = db_session.create_session()
-    author = db_sess.query(Author).filter(Author.name == book["author_name"]).first()
+    author = db_sess.query(Author).filter(
+        Author.name == book["author_name"]).first()
     if author is None:
         author = Author(name=book["author_name"])
         db_sess.add(author)
@@ -199,7 +231,8 @@ def addBook(book: dict) -> None:
     book = Book(
         title=book["title"],
         uploaded_user_id=1,
-        author_id=db_sess.query(Author).filter(Author.name == book["author_name"]).first().id,
+        author_id=db_sess.query(Author).filter(
+            Author.name == book["author_name"]).first().id,
         path=book["path"],
         description=book["description"],
         year=book["year"],
