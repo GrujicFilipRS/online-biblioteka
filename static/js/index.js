@@ -1,0 +1,52 @@
+let text = document.getElementById('books').getAttribute('data');
+
+text = text.replace('to " biografske duse ".', 'to biografske duse.');
+text = text.replace('Viljema Šekspira, \'Hamlet\' je priča', 'Viljema Šekspira, Hamlet je priča');
+text = text.replace('sumnju. \'Hamlet\' važi', 'sumnju. Hamlet važi');
+text = text.replace('od \'najprestižnijih\' Šekspirovih', 'od najprestižnijih Šekspirovih');
+console.log(text);
+console.log(text.length);
+
+//console.log(document.getElementById('books').getAttribute('data').replaceAll('\'', '"').replaceAll('None', 'null'));
+var books = pythonDictToJsObject(text);
+
+console.log(books)
+
+function pythonDictToJsObject(pythonDictString) {
+    try {
+        // Zameni jednostruke navodnike dvostrukim i "None" sa "null"
+        let jsonString = pythonDictString
+            .replace('e.\'', 'e."')
+            .replace(/'/g, '"') // Zamena jednostrukih navodnika
+            .replace(/None/g, 'null') // Zamena Python None sa null
+            .replace(/True/g, 'true') // Zamena Python True sa true
+            .replace(/False/g, 'false'); // Zamena Python False sa false
+
+        // Pretvori string u JavaScript objekat
+        let jsObject = JSON.parse(jsonString);
+
+        return jsObject;
+    } catch (error) {
+        console.error("Greška pri konverziji:", error.message);
+        return null;
+    }
+}
+
+function putBookIntoPreview(cl, id) {
+    let razred = document.getElementsByClassName(`r${cl+1}`)[0];
+    console.log(`r${cl+1}`);
+    let lektira = razred.getElementsByClassName(`lek${id+1}`)[0];
+    let title = lektira.getElementsByClassName('lek-title')[0];
+    let author = lektira.getElementsByClassName('lek-author')[0];
+    let desc = lektira.getElementsByClassName('lek-desc')[0];
+
+    title.textContent = books[cl][id]['title'];
+    author.textContent = books[cl][id]['author']['name'];
+    desc.textContent = books[cl][id]['description'].substring(0, 110) + '...';
+}
+
+for(let i = 0; i < 4; i++) {
+    for(let j = 0; j < 3; j++) {
+        putBookIntoPreview(i, j);
+    }
+}
