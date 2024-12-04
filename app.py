@@ -134,9 +134,10 @@ def search(search_text: str):
     return render_template("search_results.html", articles=articles, search_form=g.search_form)
 
 
+# Za vreme testiranja, vratiti kad bude gotovo
 @app.route('/library', methods=["GET", "POST"])
 def library():
-    return redirect('/')
+    return render_template('book.html', title='Knjiga')
 
 
 @app.route('/library/<string:book_link>', methods=["GET", "POST"])
