@@ -1,9 +1,10 @@
 class Author {
     static authors = [];
-    constructor(id, name, desc) {
+    constructor(id, name, desc, image) {
         this.id = id;
         this.name = name;
         this.desc = desc;
+        this.image = image;
         
         Author.authors.push(this);
     }
@@ -12,8 +13,9 @@ class Author {
         let id = json['id'];
         let name = json['name'];
         let desc = json['desc'];
+        let image = json['image'];
 
-        let author = new Author(id, name, desc);
+        let author = new Author(id, name, desc, image);
         return author;
     }
 

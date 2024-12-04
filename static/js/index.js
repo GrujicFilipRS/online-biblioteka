@@ -39,6 +39,7 @@ function putBookIntoPreview(cl, id) {
     let title = lektira.getElementsByClassName('lek-title')[0];
     let author = lektira.getElementsByClassName('lek-author')[0];
     let desc = lektira.getElementsByClassName('lek-desc')[0];
+    let image = lektira.getElementsByClassName('lek-right-div')[0].children[0];
 
     try{
         title.textContent = Book.books[cl*3+id].name;
@@ -56,6 +57,12 @@ function putBookIntoPreview(cl, id) {
         desc.textContent = Book.books[cl*3+id].desc.substring(0, 110) + '...';
     } catch(error) {
         console.log('blya3');
+    }
+
+    try {
+        image.setAttribute('src', `${Book.books[cl*3+id].getAuthor().image}`);
+    } catch(error) {
+        console.log('blya4');
     }
     
 }
