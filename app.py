@@ -48,14 +48,10 @@ def logout():
     return redirect("/")
 
 
-# Ovo je stranica UI za login
 @app.route('/login')
 def login_page():
     return render_template('login.html', title='Log in')
 
-# Ti Griško redirectuj ovo kako ti se sviđa, u login.html ti je forma za login
-@app.route('/sign_in', methods=['GET', 'POST'])
-def sign_in():
     sign_in_form = UserSignInForm()
     if sign_in_form.validate_on_submit():
         db_sess = db_session.create_session()
@@ -140,25 +136,32 @@ def library():
     return render_template('book.html', title='Knjiga')
 
 
-@app.route('/library/<string:book_link>', methods=["GET", "POST"])
+@app.route('/library/<string:book_id>', methods=["GET", "POST"])
 def library_book(book_id: str):
     db_sess = db_session.create_session()
     book = db_sess.query(Book).filter(Book.id == book_id).first()
     if book is None:
         return render_template("book.html",
                                answer=False,
-                               book=book,
                                search_form=g.search_form)
-
+    book_dict = {
+        "id": book.id,
+        "title": book.title,
+        "uploaded_user_id": book.uploaded_user_id,
+        "created_at": book.created_at,
+        "author_id": book.author_id,
+        "description": book.description
+    }
     return render_template("book.html",
                            answer=True,
-                           book=book,
+                           book=book_dict,
                            search_form=g.search_form)
 
 
 @app.route('/')
 def index():
-    return render_template("index.html", title="Library", search_form=g.search_form, )
+    return render_template("index.html", title="Library", search_form=g.search_form)
+
 
 def main() -> None:
     db_session.global_init("db/library.sqlite")
