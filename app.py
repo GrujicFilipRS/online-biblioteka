@@ -87,6 +87,8 @@ def login_page():
             return redirect('/')
         return render_template(
             "login.html",
+            quote=g.quote["quote"],
+            author=g.quote["author"],
             title="Log in",
             message="Ne postoji nalog sa takvim mejlom i šifrom",
             login_form=login_form,
@@ -94,6 +96,8 @@ def login_page():
         )
     return render_template(
         "login.html",
+        quote=g.quote["quote"],
+        author=g.quote["author"],
         title="Log in",
         login_form=login_form,
         search_form=g.search_form
@@ -108,6 +112,8 @@ def sign_up():
         if db_sess.query(User).filter(User.email == sign_up_form.email.data).first() is not None:
             return render_template(
                 "sign_up_user.html",
+                quote=g.quote["quote"],
+                author=g.quote["author"],
                 title="Sign In",
                 search_form=g.search_form,
                 message="There is already an account with that email!",
@@ -116,6 +122,8 @@ def sign_up():
         if db_sess.query(User).filter(User.nickname == sign_up_form.nickname.data).first() is not None:
             return render_template(
                 "sign_up_user.html",
+                quote=g.quote["quote"],
+                author=g.quote["author"],
                 title="Sign In",
                 search_form=g.search_form,
                 message="There is already an account with that nickname!",
@@ -135,6 +143,8 @@ def sign_up():
 
     return render_template(
         "sign_up_user.html",
+        quote=g.quote["quote"],
+        author=g.quote["author"],
         title="Sign Up",
         search_form=g.search_form,
         sign_up_form=sign_up_form
@@ -154,13 +164,22 @@ def search(search_text: str):
 
     sess = db_session.create_session()
     articles = sess.query(Book).filter(Book.id.in_(ids)).all()
-    return render_template("search_results.html", articles=articles, search_form=g.search_form)
+    return render_template("search_results.html",
+                           quote=g.quote["quote"],
+                           author=g.quote["author"],
+                           articles=articles,
+                           search_form=g.search_form)
 
 
 # Za vreme testiranja, vratiti kad bude gotovo
 @app.route('/library', methods=["GET", "POST"])
 def library():
-    return render_template('book.html', title='Knjiga')
+    return render_template(
+        'book.html',
+        title='Knjiga',
+        quote=g.quote["quote"],
+        author=g.quote["author"],
+    )
 
 
 @app.route('/library/<string:book_id>', methods=["GET", "POST"])
@@ -169,6 +188,10 @@ def library_book(book_id: str):
     book = db_sess.query(Book).filter(Book.id == book_id).first()
     if book is None:
         return render_template("book.html",
+
+                               quote=g.quote["quote"],
+                               author=g.quote["author"],
+
                                answer=False,
                                search_form=g.search_form)
     book_dict = {
@@ -180,6 +203,10 @@ def library_book(book_id: str):
         "description": book.description
     }
     return render_template("book.html",
+
+                           quote=g.quote["quote"],
+                           author=g.quote["author"],
+
                            answer=True,
                            book=book_dict,
                            search_form=g.search_form)
