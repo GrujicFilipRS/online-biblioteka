@@ -15,7 +15,7 @@ from tools.nlp import tokenize
 
 
 from requests import get as requests_get
-import conf
+import conf.conf as conf
 import json
 
 
