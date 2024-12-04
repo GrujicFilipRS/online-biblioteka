@@ -1,3 +1,5 @@
 .idea/
 venv/
-db/
+/data/__pycache__
+/tools/__pycache__
+/forms/__pycache__
