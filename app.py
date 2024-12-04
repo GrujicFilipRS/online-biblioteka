@@ -44,6 +44,9 @@ def handle_search():
     # //made by @yxzhin with <3 03.12.2024. ^^
     # //#hellokittysupremacy #finelcomeback
 
+    if request.path.startswith("/static/"):
+        return None
+
     response = requests_get(
         url="https://api.api-ninjas.com/v1/quotes",
         headers={"X-Api-Key": conf.API_KEY_QUOTES},
