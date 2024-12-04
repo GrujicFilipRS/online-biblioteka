@@ -7,7 +7,7 @@ from data.books import Book
 from data.users import User
 from data.authors import Author
 from forms.search import SearchForm
-from forms.user import UserSignInForm, UserSignUpForm
+from forms.user import UserLogInForm, UserSignUpForm
 
 from datetime import datetime, timedelta
 from tools.nlp import tokenize
@@ -48,28 +48,26 @@ def logout():
     return redirect("/")
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login_page():
-    return render_template('login.html', title='Log in')
-
-    sign_in_form = UserSignInForm()
-    if sign_in_form.validate_on_submit():
+    login_form = UserLogInForm()
+    if login_form.validate_on_submit():
         db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email == sign_in_form.email.data).first()
-        if user and user.check_password(sign_in_form.password.data):
-            login_user(user, remember=sign_in_form.remember_me.data)
+        user = db_sess.query(User).filter(User.nickname == login_form.nickname.data).first()
+        if user and user.check_password(login_form.password.data):
+            login_user(user, remember=login_form.remember_me.data)
             return redirect('/')
         return render_template(
-            "sign_in_user.html",
-            title="Sign In",
-            message="Incorrect email or password",
-            sign_in_form=sign_in_form,
+            "login.html",
+            title="Log in",
+            message="Ne postoji nalog sa takvim mejlom i šifrom",
+            login_form=login_form,
             search_form=g.search_form
         )
     return render_template(
-        "sign_in_user.html",
-        title="Sign In",
-        sign_in_form=sign_in_form,
+        "login.html",
+        title="Log in",
+        login_form=login_form,
         search_form=g.search_form
     )
 
@@ -174,7 +172,6 @@ def index():
 
 
 def bookToDict(book: Book) -> dict:
-    print(book.title, book.id, book.author_id)
     author = db_session.create_session().query(Author).filter(Author.id == book.author_id).first()
     return {
         "id": book.id,
