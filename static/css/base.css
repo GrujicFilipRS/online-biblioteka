@@ -206,3 +206,11 @@ footer p {
     height: 87%;
     border-radius: 5px;
 }
+
+.primary-btn:disabled {
+    background-color: #d66604;
+}
+
+.primary-btn:disabled:hover {
+    cursor:auto;
+}

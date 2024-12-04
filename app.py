@@ -48,6 +48,12 @@ def logout():
     return redirect("/")
 
 
+# Ovo je stranica UI za login
+@app.route('/login')
+def login_page():
+    return render_template('login.html', title='Log in')
+
+# Ti Griško redirectuj ovo kako ti se sviđa, u login.html ti je forma za login
 @app.route('/sign_in', methods=['GET', 'POST'])
 def sign_in():
     sign_in_form = UserSignInForm()
