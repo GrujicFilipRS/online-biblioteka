@@ -106,6 +106,7 @@ def sign_up():
         db_sess.commit()
         login_user(user)
         return redirect('/')
+
     return render_template(
         "sign_up_user.html",
         title="Sign Up",
@@ -160,7 +161,35 @@ def library_book(book_id: str):
 
 @app.route('/')
 def index():
-    return render_template("index.html", title="Library", search_form=g.search_form)
+    db_sess = db_session.create_session()
+
+    # getting 5 books of every grade from 1 to 4 and converting to dict
+    books = [
+        [bookToDict(book) for book in db_sess.query(Book).filter(Book.grade == i).limit(5).all()] for i in range(1, 5)
+    ]
+    return render_template("index.html",
+                           title="Online biblioteka",
+                           search_form=g.search_form,
+                           books=books)
+
+
+def bookToDict(book: Book) -> dict:
+    print(book.title, book.id, book.author_id)
+    author = db_session.create_session().query(Author).filter(Author.id == book.author_id).first()
+    return {
+        "id": book.id,
+        "title": book.title,
+        "uploaded_user_id": book.uploaded_user_id,
+        "author": {
+            "id": author.id,
+            "name": author.name,
+            "description": author.description
+        },
+        "path": book.path,
+        "description": book.description,
+        "year": book.year,
+        "grade": book.grade,
+    }
 
 
 def addBook(book: dict) -> None:
