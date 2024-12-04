@@ -13,11 +13,9 @@ from forms.user import UserLogInForm, UserSignUpForm
 from datetime import datetime, timedelta
 from tools.nlp import tokenize
 
-
 from requests import get as requests_get
 import conf.conf as conf
 import json
-
 
 template_dir = "templates"
 static_dir = "static"
@@ -43,7 +41,6 @@ def load_user(user_id):
 
 @app.before_request
 def handle_search():
-
     # //made by @yxzhin with <3 03.12.2024. ^^
     # //#hellokittysupremacy #finelcomeback
 
@@ -238,7 +235,8 @@ def bookToDict(book: Book) -> dict:
         "author": {
             "id": author.id,
             "name": author.name,
-            "description": author.description
+            "description": author.description,
+            "image": author.image
         },
         "path": book.path,
         "description": book.description,
@@ -273,7 +271,7 @@ def main() -> None:
     db_session.global_init("db/library.sqlite")
     sess = db_session.create_session()
     books = sess.query(Book).all()
-    #for book in books:
+    # for book in books:
     #    app.book_index[book.id] = tokenize(book.title)
     app.run(host=HOST, port=PORT, debug=True, threaded=True)
 
