@@ -1,5 +1,6 @@
 .idea/
 venv/
-/data/__pycache__
-/tools/__pycache__
-/forms/__pycache__
+db/
+data/__pycache__
+tools/__pycache__
+forms/__pycache__
