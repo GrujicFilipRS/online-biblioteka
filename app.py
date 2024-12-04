@@ -163,6 +163,26 @@ def index():
     return render_template("index.html", title="Library", search_form=g.search_form)
 
 
+def addBook(book: dict) -> None:
+    db_sess = db_session.create_session()
+    author = db_sess.query(Author).filter(Author.name == book["author_name"]).first()
+    if author is None:
+        author = Author(name=book["author_name"])
+        db_sess.add(author)
+
+    book = Book(
+        title=book["title"],
+        uploaded_user_id=1,
+        author_id=db_sess.query(Author).filter(Author.name == book["author_name"]).first().id,
+        path=book["path"],
+        description=book["description"],
+        year=book["year"],
+        grade=book["class"],
+    )
+    db_sess.add(book)
+    db_sess.commit()
+
+
 def main() -> None:
     db_session.global_init("db/library.sqlite")
     sess = db_session.create_session()
