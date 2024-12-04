@@ -213,8 +213,8 @@ def main() -> None:
     db_session.global_init("db/library.sqlite")
     sess = db_session.create_session()
     books = sess.query(Book).all()
-    for book in books:
-        app.book_index[book.id] = tokenize(book.title)
+    #for book in books:
+    #    app.book_index[book.id] = tokenize(book.title)
     app.run(host=HOST, port=PORT, debug=True, threaded=True)
 
 

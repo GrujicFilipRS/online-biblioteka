@@ -40,13 +40,30 @@ function putBookIntoPreview(cl, id) {
     let author = lektira.getElementsByClassName('lek-author')[0];
     let desc = lektira.getElementsByClassName('lek-desc')[0];
 
-    title.textContent = books[cl][id]['title'];
-    author.textContent = books[cl][id]['author']['name'];
-    desc.textContent = books[cl][id]['description'].substring(0, 110) + '...';
+    try{
+        title.textContent = Book.books[cl*3+id].name;
+    } catch(error) {
+        console.log('blya1');
+    }
+
+    try{
+        author.textContent = Book.books[cl*3+id].getAuthor().name;
+    } catch(error) {
+        throw(error);
+    }
+
+    try{
+        desc.textContent = Book.books[cl*3+id].desc.substring(0, 110) + '...';
+    } catch(error) {
+        console.log('blya3');
+    }
+    
 }
 
 for(let i = 0; i < 4; i++) {
     for(let j = 0; j < 3; j++) {
+        console.log(books[i][j]);
+        Book.parseJSON(books[i][j]);
         putBookIntoPreview(i, j);
     }
 }
