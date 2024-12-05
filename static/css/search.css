@@ -47,10 +47,29 @@ h1 {
     flex-direction: column;
 }
 
-h3 {
+.search-result h3 {
     font-size: 32pt;
 }
 
-p {
+.search-result p {
     font-size: 20pt;
+}
+
+@media (max-width: 840px) {
+    .search-result {
+        width: 90%;
+    }
+
+    .search-result h3 {
+        font-size: 5vw;
+    }
+
+    .search-result p {
+        font-size: 2vw;
+    }
+
+    .search-button-see button {
+        width: 15vw;
+        font-size: 12pt;
+    }
 }
