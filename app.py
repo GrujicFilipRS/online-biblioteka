@@ -63,7 +63,32 @@ def handle_search():
         quote["quote"] = "error loading a quote. :( #yxzhinCodeMoment"
         quote["author"] = ""
 
-    quote = json.loads(response.text)[0]
+    else:
+        quote = json.loads(response.text)[0]
+
+    # //04.12.2024.
+
+    query = quote["author"]
+
+    if query != "":
+        response = requests_get(
+            url=f"https://www.googleapis.com/customsearch/v1?q={query}\
+                &searchType=image&key={conf.API_KEY_IMAGES}\
+                &cx={conf.API_CX_IMAGES}",
+        )
+
+        print(response.status_code, response.text)
+
+        if response.status_code != 200:
+            image_url = ""
+
+        else:
+            image_url = json.loads(response.text)["items"][0]["link"]
+
+    quote["image_url"] = image_url
+
+    print("[debug] image_url: ", image_url)
+
     g.quote = quote
 
     # //end of my part
@@ -253,7 +278,8 @@ def main() -> None:
     # books and authors tokens for search
     books = db_sess.query(Book).all()
     for book in books:
-        app.tokens_index[book.id] = tokenize(book.title) | tokenize(book.author.name)
+        app.tokens_index[book.id] = tokenize(
+            book.title) | tokenize(book.author.name)
 
     # getting dicts of 5 books of every grade from 1 to 4
     app.main_page_books = [
