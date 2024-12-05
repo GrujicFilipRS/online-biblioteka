@@ -1,5 +1,4 @@
-from flask import Flask, render_template, redirect, render_template, redirect, request, render_template_string, g, \
-    send_from_directory
+from flask import Flask, render_template, redirect, request, g, send_from_directory, flash
 from flask_login import (LoginManager, login_user,
                          login_required, logout_user, current_user)
 from flask_restful import reqparse, abort, Api, Resource
@@ -10,6 +9,7 @@ from data.users import User
 from data.authors import Author
 from forms.search import SearchForm
 from forms.user import UserLogInForm, UserSignUpForm
+from forms.book import BookForm
 
 from datetime import timedelta
 import nltk
@@ -213,6 +213,44 @@ def serve_pdf(filename):
     return send_from_directory('uploads/books', filename)
 
 
+@app.route('/add', methods=["GET", "POST"])
+def add():
+    book_form = BookForm()
+    print("Book form")
+    print(book_form.errors)
+    if book_form.validate_on_submit():
+        print("Form validated successfully")
+        print("File received:", book_form.file.data)
+    else:
+        print("Form validation failed", book_form.errors)
+    if book_form.validate_on_submit():
+        print("book_form.validate_on_submit()")
+        file = book_form.file.data
+        filename = f"{book_form.title.data} – {book_form.author_name.data} ({book_form.year.data}).pdf"
+        filepath = f"uploads/books/{filename}"
+        book_dict = {
+            "title": book_form.title.data,
+            "uploaded_user_id": 1,
+            "author_name": book_form.author_name.data,
+            "path": filepath,
+            "description": book_form.description.data,
+            "year": book_form.year.data,
+            "grade": book_form.grade.data
+        }
+        addBook(book_dict)
+        file.save(filepath)
+        print(f"Knjiga je uspešno dodata na lokaciju {filepath}")
+        flash(f"Knjiga je uspešno dodata na lokaciju {filepath}")
+        return redirect("/add")
+    print("Not validate")
+    return render_template("add_book.html",
+                           quote=g.quote["quote"],
+                           author=g.quote["author"],
+                           title="Dodavanje knjige",
+                           search_form=g.search_form,
+                           book_form=BookForm())
+
+
 @app.route('/')
 def index():
     return render_template("index.html",
@@ -234,12 +272,11 @@ def addBook(book: dict) -> None:
     book = Book(
         title=book["title"],
         uploaded_user_id=1,
-        author_id=db_sess.query(Author).filter(
-            Author.name == book["author_name"]).first().id,
+        author_id=db_sess.query(Author).filter(Author.name == book["author_name"]).first().id,
         path=book["path"],
         description=book["description"],
         year=book["year"],
-        grade=book["class"],
+        grade=book["grade"],
     )
     db_sess.add(book)
     db_sess.commit()
