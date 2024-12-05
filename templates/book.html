@@ -3,6 +3,7 @@
 {% block content %}
 <link rel="stylesheet" href="../static/css/book.css">
 
+{% if answer %}
 <div class="container">
     <div class="header">
         <p class="date-added">Dodato: {{ book.created_at }}</p>
@@ -34,6 +35,9 @@
 </div>
 
 <meta id="book" data="{{book}}" data-other="{{other}}">
+{% else %}
+<p style="color:red;text-align:center">Knjiga sa datim id ne postoji!</p>
+{% endif %}
 
 <script src="../static/js/author.js"></script>
 <script src="../static/js/book.js"></script>

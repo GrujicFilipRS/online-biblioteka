@@ -222,7 +222,7 @@ def library_book(book_id: str):
         return render_template("book.html",
                                quote=g.quote["quote"],
                                author=g.quote["author"],
-                               answer="",
+                               answer=False,
                                title="Pregled knjige",
                                search_form=g.search_form)
     book_dict = book.to_dict()
@@ -337,6 +337,16 @@ def edit(book_id: int):
                            search_form=g.search_form,
                            book_form=edit_form,
                            answer="")
+
+
+@app.route('/delete/<int:book_id>', methods=["GET", "POST"])
+def delete(book_id: int):
+    db_sess = db_session.create_session()
+    book = db_sess.query(Book).filter(Book.id == book_id).first()
+    if book:
+        db_sess.delete(book)
+        db_sess.commit()
+    return redirect("/")
 
 
 @app.route('/')

@@ -78,8 +78,8 @@
                     {% endfor %}
                 </div>
             </div>
-            {% if title == "Dodavanje knjige" %}
             <div class="buttons">
+                {% if title == "Dodavanje knjige" %}
                 <div class="input-field">
                     <div class="input-bar-cont">
                         <div class="input-bar-body">
@@ -92,11 +92,11 @@
                         {% endfor %}
                     </div>
                 </div>
+                {% endif %}
                 <div class="right">
                     {{ book_form.submit(class="btn btn-primary primary-btn") }}
                 </div>
             </div>
-            {% endif %}
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     <ul class="alert-list">
