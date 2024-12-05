@@ -79,7 +79,7 @@ function putBookIntoPreview(cl, id) {
 }
 
 for(let i = 0; i < 4; i++) {
-    for(let j = 0; j < 5; j++) {
+    for(let j = 0; j < 3; j++) {
         console.log(books[i][j]);
         Book.parseJSON(books[i][j]);
         if (j < 3)

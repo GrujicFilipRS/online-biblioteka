@@ -322,7 +322,7 @@ def main() -> None:
 
     # getting dicts of 5 books of every grade from 1 to 4
     app.main_page_books = [
-        [book.to_dict() for book in db_sess.query(Book).filter(Book.grade == i).limit(5).all()] for i in range(1, 5)
+        [book.to_dict() for book in db_sess.query(Book).filter(Book.grade == i).limit(3).all()] for i in range(1, 5)
     ]
     app.run(host=HOST, port=PORT, debug=True, threaded=True)
 
