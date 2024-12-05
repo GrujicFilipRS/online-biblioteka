@@ -156,3 +156,48 @@
     justify-content: center;
     height: 100%;
 }
+
+@media (max-width: 1370px) {
+    .hero-img {
+        display:none;
+    }
+
+    .hero {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 1180px) {
+    .lek3 {
+        display: none;
+    }
+}
+
+@media (max-width: 780px) {
+    .razred {
+        margin-left: 2%;
+    }
+}
+
+@media (max-width: 760px) {
+    .lek2 {
+        display: none;
+    }
+
+    .razred-lektire {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 450px) {
+    .hero-txt .hero-title {
+        font-size: 32pt;
+    }
+
+    .hero-txt .hero-subtitle {
+        font-size: 18pt;
+    }
+}
