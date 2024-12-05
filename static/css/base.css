@@ -214,3 +214,89 @@ footer p {
 .primary-btn:disabled:hover {
     cursor:auto;
 }
+
+.quote {
+    text-align: center;
+    color: white;
+    margin-bottom: 50px;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-top: 50px;
+}
+
+.nav-btns {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+}
+
+@media (max-width: 1370px) {
+    .search-bar {
+        width: 500px;
+    }
+
+    .search-bar .input-bar {
+        width: 65%;
+    }
+
+    nav .title-a {
+        font-size: 24pt;
+    }
+}
+
+@media (max-width: 965px) {
+    .search-bar {
+        width: 400px;
+    }
+    
+    nav .secondary-btn {
+        width: 85px;
+        font-size: 12pt;
+    }
+
+    .cont-login-btn {
+        margin-right: 30px;
+    }
+
+    nav .title-a {
+        font-size: 19pt;
+    }
+}
+
+@media (max-width: 700px) {
+    nav {
+        flex-direction: column;
+    }
+
+    .search-bar {
+        width: 80%;
+    }
+
+    .search-bar .input-bar input {
+        font-size: 12pt;
+        width: 70%;
+    }
+
+    .cont-login-btn {
+        margin-left: 20px;
+        margin-top: 15px;
+    }
+
+    .nav-btns {
+        margin-left: 0;
+    }
+}
+
+.add-link-btn {
+    width: 50px;
+}
+
+.logout-btn {
+    background-color: #4E2626;
+}
+
+.cont-login-btn {
+    display: flex;
+    flex-direction: row;
+}

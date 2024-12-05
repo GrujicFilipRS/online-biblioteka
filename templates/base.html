@@ -3,73 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/css/base.css">
+    <link rel="stylesheet" href="../static/css/base.css">
     <link rel="stylesheet" href="https://use.typekit.net/hct2xrr.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Parkinsans:wght@300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Parkinsans:wght@300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
     <title>{{ title }}</title>
 </head>
 <body>
 <nav>
-    <a class="title-a" href="./">ONLINE<br>BIBLIOTEKA</a>
+    <a class="title-a" href="/">ONLINE<br>BIBLIOTEKA</a>
+    
     <div class="search-bar-cont">
         <div class="search-bar">
             <div class="search-ico"><img src="../static/images/search-ico.png" alt=""></div>
-            <div class="input-bar"><input id="search-input" placeholder="Search..." type="text"></div>
+            <form id="search-form" onsubmit="updateAction(event)" class="input-bar">
+                <input required onKeyPress="return checkSubmit(event)" id="search-input" placeholder="Search..." type="text" name="search_text">
+            </form>
         </div>
     </div>
-    <div class="cont-login-btn"><a href="./login" class="login-btn">
-        <button class="secondary-btn">LOG IN</button>
-    </a></div>
-</nav>
 
-<div style="display: none" id="search-results" class="search-results">
-    <div class="search-result sr1">
-        <div class="book-title-div"><a class="book-title">Rat i mir</a></div>
-        <div class="author-info">
-            <div class="author-name">
-                <p>Ljev Nikolajevič Tolstoj</p>
-            </div>
-            <div class="author-img">
-                <img src="../img/example/tolstoj.jpg">
-            </div>
+    <script>
+        function updateAction(event) {
+            const inputValue = document.getElementById('search-input').value;
+            if (inputValue) {
+                const form = document.getElementById('search-form');
+                form.action = `/search/${encodeURIComponent(inputValue)}`;
+            }
+        }
+    </script>
+        <div class="nav-btns">
+        {% if current_user.is_authenticated %}
+        <div class="cont-login-btn">
+            <a href="/add"><button class="secondary-btn add-link-btn">+</button></a>
+            <a href="/logout"><button class="secondary-btn logout-btn">LOG OUT</button></a>
+        </div>
+        {% else %}
+        <div class="cont-login-btn">
+            <a href="/login" class="login-btn">
+                <button class="secondary-btn">LOG IN</button>
+            </a>
+        </div>
+        {% endif %}
         </div>
     </div>
-    <div class="search-result sr2">
-        <div class="book-title-div"><a class="book-title">Zločin i kazna</a></div>
-        <div class="author-info">
-            <div class="author-name">
-                <p>Fjodor Mihajlovič Dostojevski</p>
-            </div>
-            <div class="author-img">
-                <img src="../img/example/dostojevski.jpg">
-            </div>
-        </div>
-    </div>
-    <div class="search-result sr3">
-        <div class="book-title-div"><a class="book-title">Mostovi</a></div>
-        <div class="author-info">
-            <div class="author-name">
-                <p>Ivo Andrić</p>
-            </div>
-            <div class="author-img">
-                <img src="../img/example/andric.jpg">
-            </div>
-        </div>
-    </div>
-    <div class="search-result sr4">
-        <div class="book-title-div"><a class="book-title">Orlovi rano lete</a></div>
-        <div class="author-info">
-            <div class="author-name">
-                <p>Branko Ćopić</p>
-            </div>
-            <div class="author-img">
-                <img src="../img/example/copic.jpg">
-            </div>
-        </div>
-    </div>
-</div>
+</nav>
 </body>
 
 <main>
@@ -77,13 +56,11 @@
     {% endblock %}
 </main>
 
-<div class="quote">
-
-</div>
+<div class="quote">{{quote}} - {{author}}</div> 
 
 <footer>
     <p>Copyright 2024 © Bljinčiki, all rights reserved</p>
 </footer>
 
-<script src="../js/base.js"></script>
+<script src="../static/js/base.js"></script>
 </html>

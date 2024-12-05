@@ -5,29 +5,45 @@
 
 <h1 class="admin-txt">Admin log in</h1>
 
-<form action="./sign_in" method="post" class="login-form">
+<form action="" method="POST" class="login-form">
+    {{ login_form.hidden_tag() }}
     <div class="left">
         <div class="username">
             <div class="input-bar-cont">
                 <div class="username-bar">
                     <div class="search-ico"><img src="../static/images/username-ico.png" alt=""></div>
-                    <div class="input-bar"><input id="username-input" name='username' id="search-input" placeholder="Username" type="text"></div>
+                    <div class="input-bar">
+                        {{ login_form.nickname(class="form-control", id="username-input", placeholder="Username") }}
+                    </div>
                 </div>
+                {% for error in login_form.nickname.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
             </div>
         </div>
         <div class="pwd">
             <div class="input-bar-cont">
                 <div class="username-bar">
                     <div class="search-ico"><img src="../static/images/pwd-ico.png" alt=""></div>
-                    <div class="input-bar"><input id="pwd-input" name='pwd' id="search-input" placeholder="Password" type="password"></div>
+                    <div class="input-bar">
+                        {{ login_form.password(class="form-control", id="pwd-input", placeholder="Password") }}
+                    </div>
                 </div>
+                {% for error in login_form.password.errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error }}
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
     <div class="right">
-        <button id='login-btn' type="submit" class="primary-btn" disabled>LOG IN</button>
+        {{ login_form.submit(type="submit", class="btn btn-primary primary-btn") }}
     </div>
-
-    <script src="../static//js/login.js"></script>
+    <script src="../static/js/login.js"></script>
 </form>
+<p style="color:red; text-align: center;">{{ message }}</p>
+
 {% endblock %}

@@ -2,11 +2,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField
 from wtforms.fields.numeric import IntegerField
 from wtforms.fields.simple import PasswordField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, Email
+from wtforms.validators import DataRequired, EqualTo, Email
 
 
-class UserSignInForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+class UserLogInForm(FlaskForm):
+    nickname = StringField('Nickname', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
