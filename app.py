@@ -124,7 +124,7 @@ def login_page():
             quote=g.quote["quote"],
             author=g.quote["author"],
             title="Log in",
-            message="Ne postoji nalog sa takvim mejlom i šifrom",
+            message="Ne postoji nalog sa takvim korisničkim imenom i šifrom",
             login_form=login_form,
             search_form=g.search_form
         )
