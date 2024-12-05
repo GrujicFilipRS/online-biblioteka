@@ -18,11 +18,27 @@
     <div class="search-bar-cont">
         <div class="search-bar">
             <div class="search-ico"><img src="../static/images/search-ico.png" alt=""></div>
-            <div class="input-bar"><input id="search-input" placeholder="Search..." type="text"></div>
+            <form id="search-form" onsubmit="updateAction(event)" class="input-bar">
+                <input required onKeyPress="return checkSubmit(event)" id="search-input" placeholder="Search..." type="text" name="search_text">
+            </form>
         </div>
     </div>
+
+    <script>
+        function updateAction(event) {
+            const inputValue = document.getElementById('search-input').value;
+            if (inputValue) {
+                const form = document.getElementById('search-form');
+                form.action = `/search/${encodeURIComponent(inputValue)}`;
+            }
+        }
+    </script>
+        <div class="nav-btns">
         {% if current_user.is_authenticated %}
-        <a class="navbar-brand" href="/logout">{{ current_user.nickname }}</a>
+        <div class="cont-login-btn">
+            <a href="/add"><button class="secondary-btn add-link-btn">+</button></a>
+            <a href="/logout"><button class="secondary-btn logout-btn">LOG OUT</button></a>
+        </div>
         {% else %}
         <div class="cont-login-btn">
             <a href="/login" class="login-btn">
@@ -30,55 +46,9 @@
             </a>
         </div>
         {% endif %}
+        </div>
     </div>
 </nav>
-
-<div style="display: none" id="search-results" class="search-results">
-    <div class="search-result sr1">
-        <div class="book-title-div"><a class="book-title">Rat i mir</a></div>
-        <div class="author-info">
-            <div class="author-name">
-                <p>Ljev Nikolajevič Tolstoj</p>
-            </div>
-            <div class="author-img">
-                <img src="../static/img/example/tolstoj.jpg">
-            </div>
-        </div>
-    </div>
-    <div class="search-result sr2">
-        <div class="book-title-div"><a class="book-title">Zločin i kazna</a></div>
-        <div class="author-info">
-            <div class="author-name">
-                <p>Fjodor Mihajlovič Dostojevski</p>
-            </div>
-            <div class="author-img">
-                <img src="../static/img/example/dostojevski.jpg">
-            </div>
-        </div>
-    </div>
-    <div class="search-result sr3">
-        <div class="book-title-div"><a class="book-title">Mostovi</a></div>
-        <div class="author-info">
-            <div class="author-name">
-                <p>Ivo Andrić</p>
-            </div>
-            <div class="author-img">
-                <img src="../static/img/example/andric.jpg">
-            </div>
-        </div>
-    </div>
-    <div class="search-result sr4">
-        <div class="book-title-div"><a class="book-title">Orlovi rano lete</a></div>
-        <div class="author-info">
-            <div class="author-name">
-                <p>Branko Ćopić</p>
-            </div>
-            <div class="author-img">
-                <img src="../static/img/example/copic.jpg">
-            </div>
-        </div>
-    </div>
-</div>
 </body>
 
 <main>

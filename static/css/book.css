@@ -86,3 +86,9 @@
     height: 500px;
     border: none;
 }
+
+@media (max-width: 1467px) {
+    embed {
+        width: 90%;
+    }
+}
