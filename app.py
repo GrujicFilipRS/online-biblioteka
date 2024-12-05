@@ -51,11 +51,15 @@ def handle_search():
 
     if request.path.startswith("/static/"):
         return None
-
     response = requests_get(
         url="https://api.api-ninjas.com/v1/quotes?category=education",
         headers={"X-Api-Key": conf.API_KEY_QUOTES},
     )
+    while len(json.loads(response.text)[0]) > 250:
+        response = requests_get(
+            url="https://api.api-ninjas.com/v1/quotes?category=education",
+            headers={"X-Api-Key": conf.API_KEY_QUOTES},
+        )
 
     quote = dict()
 
