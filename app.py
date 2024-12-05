@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, render_template, redirect, request, render_template_string, g
+from flask import Flask, render_template, redirect, render_template, redirect, request, render_template_string, g, send_from_directory
 from flask_login import (LoginManager, login_user,
                          login_required, logout_user, current_user)
 from flask_restful import reqparse, abort, Api, Resource
@@ -49,7 +49,7 @@ def handle_search():
         return None
 
     response = requests_get(
-        url="https://api.api-ninjas.com/v1/quotes",
+        url="https://api.api-ninjas.com/v1/quotes?category=education",
         headers={"X-Api-Key": conf.API_KEY_QUOTES},
     )
 
@@ -195,14 +195,7 @@ def library_book(book_id: str):
 
                                answer=False,
                                search_form=g.search_form)
-    book_dict = {
-        "id": book.id,
-        "title": book.title,
-        "uploaded_user_id": book.uploaded_user_id,
-        "created_at": book.created_at,
-        "author_id": book.author_id,
-        "description": book.description
-    }
+    book_dict = bookToDict(book)
     return render_template("book.html",
 
                            quote=g.quote["quote"],
@@ -211,6 +204,11 @@ def library_book(book_id: str):
                            answer=True,
                            book=book_dict,
                            search_form=g.search_form)
+
+
+@app.route('/uploads/books/<filename>')
+def serve_pdf(filename):
+    return send_from_directory('uploads/books', filename)
 
 
 @app.route('/')
