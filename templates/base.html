@@ -33,9 +33,12 @@
             }
         }
     </script>
-
+        <div class="nav-btns">
         {% if current_user.is_authenticated %}
-        <a class="navbar-brand" href="/logout">{{ current_user.nickname }}</a>
+        <div class="cont-login-btn">
+            <a href="/add"><button class="secondary-btn add-link-btn">+</button></a>
+            <a href="/logout"><button class="secondary-btn logout-btn">LOG OUT</button></a>
+        </div>
         {% else %}
         <div class="cont-login-btn">
             <a href="../login" class="login-btn">
@@ -43,6 +46,7 @@
             </a>
         </div>
         {% endif %}
+        </div>
     </div>
 </nav>
 

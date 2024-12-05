@@ -224,6 +224,13 @@ footer p {
     margin-top: 50px;
 }
 
+.nav-btns {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+}
+
 @media (max-width: 1370px) {
     .search-bar {
         width: 500px;
@@ -275,4 +282,21 @@ footer p {
         margin-left: 20px;
         margin-top: 15px;
     }
+
+    .nav-btns {
+        margin-left: 0;
+    }
+}
+
+.add-link-btn {
+    width: 50px;
+}
+
+.logout-btn {
+    background-color: #4E2626;
+}
+
+.cont-login-btn {
+    display: flex;
+    flex-direction: row;
 }
