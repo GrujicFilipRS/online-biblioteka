@@ -243,16 +243,16 @@ def serve_pdf(filename):
 
 @app.route('/add', methods=["GET", "POST"])
 def add():
+    if not current_user.is_authenticated:
+        return render_template("add_book.html",
+                               quote=g.quote["quote"],
+                               author=g.quote["author"],
+                               title="Dodavanje knjige",
+                               search_form=g.search_form,
+                               book_form=BookForm(),
+                               answer=False)
     book_form = BookForm()
-    print("Book form")
-    print(book_form.errors)
     if book_form.validate_on_submit():
-        print("Form validated successfully")
-        print("File received:", book_form.file.data)
-    else:
-        print("Form validation failed", book_form.errors)
-    if book_form.validate_on_submit():
-        print("book_form.validate_on_submit()")
         file = book_form.file.data
         filename = f"{book_form.title.data} – {book_form.author_name.data} ({book_form.year.data}).pdf"
         filepath = f"uploads/books/{filename}"
@@ -273,15 +273,14 @@ def add():
         db_sess = db_session.create_session()
         book = db_sess.query(Book).filter(Book.id == book_id).first()
         app.tokens_index[book.id] = tokenize(book.title) | tokenize(book.author.name)
-        print(app.tokens_index)
         return redirect("/add")
-    print("Not validate")
     return render_template("add_book.html",
                            quote=g.quote["quote"],
                            author=g.quote["author"],
                            title="Dodavanje knjige",
                            search_form=g.search_form,
-                           book_form=BookForm())
+                           book_form=BookForm(),
+                           answer=True)
 
 
 @app.route('/')

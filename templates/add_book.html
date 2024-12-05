@@ -4,101 +4,103 @@
 <link rel="stylesheet" href="../static/css/add_book.css">
 
 <h1 class="admin-txt">Dodavanje knjige</h1>
-
-<form action="" method="POST" class="book-form" enctype="multipart/form-data">
-    {{ book_form.hidden_tag() }}
-    <div class="left">
-        <div class="input-field">
-            <div class="input-bar-cont">
-                <div class="input-bar">
-                    {{ book_form.title(class="form-control", placeholder="Naziv") }}
-                </div>
-                {% for error in book_form.title.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
+{% if answer %}
+    <form action="" method="POST" class="book-form" enctype="multipart/form-data">
+        {{ book_form.hidden_tag() }}
+        <div class="left">
+            <div class="input-field">
+                <div class="input-bar-cont">
+                    <div class="input-bar">
+                        {{ book_form.title(class="form-control", placeholder="Naziv") }}
                     </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="input-field">
-            <div class="input-bar-cont">
-                <div class="input-bar">
-                    {{ book_form.author_name(class="form-control", placeholder="Autor") }}
-                </div>
-                {% for error in book_form.author_name.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="input-field">
-            <div class="input-bar-cont">
-                <div class="input-bar">
-                    {{ book_form.description(class="form-control", placeholder="Opis") }}
-                </div>
-                {% for error in book_form.description.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="input-field">
-            <div class="input-bar-cont">
-                <div class="input-bar">
-                    {{ book_form.year(class="form-control", placeholder="Godina prvog izdanja") }}
-                </div>
-                {% for error in book_form.year.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="input-field">
-            <div class="input-bar-cont">
-                <div class="input-bar">
-                    {{ book_form.grade(class="form-control", placeholder="Razred") }}
-                </div>
-                {% for error in book_form.grade.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="input-field">
-            <div class="input-bar-cont">
-                <div class="input-bar">
-                    {{ book_form.file(class="form-control", placeholder="Fajl") }}
-                </div>
-                {% for error in book_form.file.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class="alert-list">
-                    {% for message in messages %}
-                        <li class="alert alert-success">{{ message }}</li>
+                    {% for error in book_form.title.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
                     {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-    </div>
+                </div>
+            </div>
 
-    <div class="right">
-        {{ book_form.submit(class="btn btn-primary primary-btn") }}
-    </div>
-</form>
+            <div class="input-field">
+                <div class="input-bar-cont">
+                    <div class="input-bar">
+                        {{ book_form.author_name(class="form-control", placeholder="Autor") }}
+                    </div>
+                    {% for error in book_form.author_name.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
 
+            <div class="input-field">
+                <div class="input-bar-cont">
+                    <div class="input-bar">
+                        {{ book_form.description(class="form-control", placeholder="Opis") }}
+                    </div>
+                    {% for error in book_form.description.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="input-field">
+                <div class="input-bar-cont">
+                    <div class="input-bar">
+                        {{ book_form.year(class="form-control", placeholder="Godina prvog izdanja") }}
+                    </div>
+                    {% for error in book_form.year.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="input-field">
+                <div class="input-bar-cont">
+                    <div class="input-bar">
+                        {{ book_form.grade(class="form-control", placeholder="Razred") }}
+                    </div>
+                    {% for error in book_form.grade.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="input-field">
+                <div class="input-bar-cont">
+                    <div class="input-bar">
+                        {{ book_form.file(class="form-control", placeholder="Fajl") }}
+                    </div>
+                    {% for error in book_form.file.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="alert-list">
+                        {% for message in messages %}
+                            <li class="alert alert-success">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="right">
+            {{ book_form.submit(class="btn btn-primary primary-btn") }}
+        </div>
+    </form>
+{% else %}
+    <p style="color: red; text-align: center">Samo autentifikovani korisnici mogu da dodaju knjige!</p>
+{% endif %}
 {% endblock %}
