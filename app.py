@@ -259,7 +259,7 @@ def add():
             "title": add_form.title.data,
             "uploaded_user_id": 1,
             "author_name": add_form.author_name.data,
-            "path": filepath,
+            "path": filename,
             "description": add_form.description.data,
             "year": add_form.year.data,
             "grade": add_form.grade.data

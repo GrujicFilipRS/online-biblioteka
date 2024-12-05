@@ -18,6 +18,6 @@ class EditBookForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     author_name = StringField('Autor', validators=[DataRequired()])
     description = TextAreaField('Opis')
-    year = IntegerField('Godina izdanja', validators=[DataRequired()])
+    year = StringField('Godina izdanja', validators=[DataRequired()])
     grade = FloatField('Razred', validators=[DataRequired()])
     submit = SubmitField('Submit')
