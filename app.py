@@ -265,10 +265,15 @@ def add():
             "year": book_form.year.data,
             "grade": book_form.grade.data
         }
-        addBook(book_dict)
+        book_id = addBook(book_dict)
         file.save(filepath)
-        print(f"Knjiga je uspešno dodata na lokaciju {filepath}")
         flash(f"Knjiga je uspešno dodata na lokaciju {filepath}")
+
+        # books and authors tokens for search
+        db_sess = db_session.create_session()
+        book = db_sess.query(Book).filter(Book.id == book_id).first()
+        app.tokens_index[book.id] = tokenize(book.title) | tokenize(book.author.name)
+        print(app.tokens_index)
         return redirect("/add")
     print("Not validate")
     return render_template("add_book.html",
@@ -289,7 +294,7 @@ def index():
                            books=app.main_page_books)
 
 
-def addBook(book: dict) -> None:
+def addBook(book: dict) -> int:
     db_sess = db_session.create_session()
     author = db_sess.query(Author).filter(
         Author.name == book["author_name"]).first()
@@ -308,6 +313,7 @@ def addBook(book: dict) -> None:
     )
     db_sess.add(book)
     db_sess.commit()
+    return book.id
 
 
 def main() -> None:
@@ -317,12 +323,11 @@ def main() -> None:
     # books and authors tokens for search
     books = db_sess.query(Book).all()
     for book in books:
-        app.tokens_index[book.id] = tokenize(
-            book.title) | tokenize(book.author.name)
+        app.tokens_index[book.id] = tokenize(book.title) | tokenize(book.author.name)
 
     # getting dicts of 5 books of every grade from 1 to 4
     app.main_page_books = [
-        [book.to_dict() for book in db_sess.query(Book).filter(Book.grade == i).limit(5).all()] for i in range(1, 5)
+        [book.to_dict() for book in db_sess.query(Book).filter(Book.grade == i).limit(3).all()] for i in range(1, 5)
     ]
     app.run(host=HOST, port=PORT, debug=True, threaded=True)
 
