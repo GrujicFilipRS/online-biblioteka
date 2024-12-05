@@ -214,3 +214,11 @@ footer p {
 .primary-btn:disabled:hover {
     cursor:auto;
 }
+
+.quote {
+    text-align: center;
+    color: white;
+    margin-bottom: 50px;
+    margin-left: 100px;
+    margin-right: 100px;
+}

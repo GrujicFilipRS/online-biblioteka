@@ -15,23 +15,20 @@
 <nav>
     <a class="title-a" href="./">ONLINE<br>BIBLIOTEKA</a>
     
-    <div class="quote">quote: {{quote}} - {{author}}</div> 
-
     <div class="search-bar-cont">
         <div class="search-bar">
             <div class="search-ico"><img src="../static/images/search-ico.png" alt=""></div>
             <div class="input-bar"><input id="search-input" placeholder="Search..." type="text"></div>
         </div>
     </div>
-        <div class="user-links">
         {% if current_user.is_authenticated %}
-            <a class="navbar-brand" href="/logout">{{ current_user.nickname }}</a>
+        <a class="navbar-brand" href="/logout">{{ current_user.nickname }}</a>
         {% else %}
-            <div class="cont-login-btn">
-                <a href="./login" class="login-btn">
-                    <button class="secondary-btn">LOG IN</button>
-                </a>
-            </div>
+        <div class="cont-login-btn">
+            <a href="./login" class="login-btn">
+                <button class="secondary-btn">LOG IN</button>
+            </a>
+        </div>
         {% endif %}
     </div>
 </nav>
@@ -89,9 +86,7 @@
     {% endblock %}
 </main>
 
-<div class="quote">
-
-</div>
+<div class="quote">{{quote}} - {{author}}</div> 
 
 <footer>
     <p>Copyright 2024 © Bljinčiki, all rights reserved</p>
