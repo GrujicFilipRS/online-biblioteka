@@ -201,18 +201,14 @@ def search(search_text: str):
                            author=g.quote["author"],
                            search_results=search_results,
                            search_text=search_text,
+                           title="Search results",
                            search_form=g.search_form)
 
 
 # Za vreme testiranja, vratiti kad bude gotovo
 @app.route('/library', methods=["GET", "POST"])
 def library():
-    return render_template(
-        'book.html',
-        title='Knjiga',
-        quote=g.quote["quote"],
-        author=g.quote["author"],
-    )
+    return redirect('/')
 
 
 @app.route('/library/<string:book_id>', methods=["GET", "POST"])
@@ -224,12 +220,14 @@ def library_book(book_id: str):
                                quote=g.quote["quote"],
                                author=g.quote["author"],
                                answer=False,
+                               title="Pregled knjige",
                                search_form=g.search_form)
     book_dict = book.to_dict()
     return render_template("book.html",
                            quote=g.quote["quote"],
                            author=g.quote["author"],
                            answer=True,
+                           title="Pregled knjige",
                            book=book_dict,
                            search_form=g.search_form)
 
