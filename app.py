@@ -175,6 +175,7 @@ def search(search_text: str):
                            quote=g.quote["quote"],
                            author=g.quote["author"],
                            search_results=search_results,
+                           search_text=search_text,
                            search_form=g.search_form)
 
 

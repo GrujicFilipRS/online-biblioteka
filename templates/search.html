@@ -1,14 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="../static/css/search.css">
 <div class="main">
-    <h1>Search results</h1>
+    <h1>Rezultati za pretragu: {{ search_text }}</h1>
     {% if search_results %}
         {% for book in search_results %}
-            <div class="col-md6 border rounded">
+            <!--<div class="col-md6 border rounded">
                 <a href="/library/{{ book.id }}">{{book.title}}</a> - {{book.author.name}} ({{ book.year }})
                 <br>
                 {{ book.description[:110].strip() + "..." }}
+            </div>-->
+
+            <div class="search-result">
+                <div class="search-img"><img src="{{ book.author.image }}" alt=""></div>
+                <div class="search-text">
+                    <h3>{{ book.title }}</h3>
+                    <p>{{ book.author.name }}</p>
+                </div>
+
+                <div class="search-button-see">
+                    <a href="/library/{{ book.id }}"><button class="secondary-btn">Čitaj</button></a>
+                </div>
             </div>
         {% endfor %}
     {% else %}
