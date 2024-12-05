@@ -9,7 +9,7 @@ from data.users import User
 from data.authors import Author
 from forms.search import SearchForm
 from forms.user import UserLogInForm, UserSignUpForm
-from forms.book import BookForm
+from forms.book import AddBookForm, EditBookForm
 
 from datetime import timedelta
 import nltk
@@ -81,7 +81,7 @@ def handle_search():
                 &cx={conf.API_CX_IMAGES}",
         )
 
-        print(response.status_code, response.text)
+        # print(response.status_code, response.text)
 
         if response.status_code != 200:
             image_url = ""
@@ -91,7 +91,7 @@ def handle_search():
 
     quote["image_url"] = image_url
 
-    print("[debug] image_url: ", image_url)
+    # print("[debug] image_url: ", image_url)
 
     g.quote = quote
 
@@ -209,7 +209,6 @@ def search(search_text: str):
                            search_form=g.search_form)
 
 
-# Za vreme testiranja, vratiti kad bude gotovo
 @app.route('/library', methods=["GET", "POST"])
 def library():
     return redirect('/')
@@ -223,7 +222,7 @@ def library_book(book_id: str):
         return render_template("book.html",
                                quote=g.quote["quote"],
                                author=g.quote["author"],
-                               answer=False,
+                               answer="",
                                title="Pregled knjige",
                                search_form=g.search_form)
     book_dict = book.to_dict()
@@ -243,27 +242,27 @@ def serve_pdf(filename):
 
 @app.route('/add', methods=["GET", "POST"])
 def add():
+    add_form = AddBookForm()
     if not current_user.is_authenticated:
         return render_template("add_book.html",
                                quote=g.quote["quote"],
                                author=g.quote["author"],
                                title="Dodavanje knjige",
                                search_form=g.search_form,
-                               book_form=BookForm(),
-                               answer=False)
-    book_form = BookForm()
-    if book_form.validate_on_submit():
-        file = book_form.file.data
-        filename = f"{book_form.title.data} – {book_form.author_name.data} ({book_form.year.data}).pdf"
+                               book_form=add_form,
+                               answer="Samo autentifikovani korisnici mogu da dodaju knjige")
+    if add_form.validate_on_submit():
+        file = add_form.file.data
+        filename = f"{add_form.title.data} – {add_form.author_name.data} ({add_form.year.data}).pdf"
         filepath = f"uploads/books/{filename}"
         book_dict = {
-            "title": book_form.title.data,
+            "title": add_form.title.data,
             "uploaded_user_id": 1,
-            "author_name": book_form.author_name.data,
+            "author_name": add_form.author_name.data,
             "path": filepath,
-            "description": book_form.description.data,
-            "year": book_form.year.data,
-            "grade": book_form.grade.data
+            "description": add_form.description.data,
+            "year": add_form.year.data,
+            "grade": add_form.grade.data
         }
         book_id = addBook(book_dict)
         file.save(filepath)
@@ -279,8 +278,65 @@ def add():
                            author=g.quote["author"],
                            title="Dodavanje knjige",
                            search_form=g.search_form,
-                           book_form=BookForm(),
-                           answer=True)
+                           book_form=add_form,
+                           answer="")
+
+
+@app.route('/edit/<int:book_id>', methods=["GET", "POST"])
+def edit(book_id: int):
+    edit_form = EditBookForm()
+    if not current_user.is_authenticated:
+        return render_template("add_book.html",
+                               quote=g.quote["quote"],
+                               author=g.quote["author"],
+                               title="Editovanje knjige",
+                               search_form=g.search_form,
+                               book_form=edit_form,
+                               answer="Samo autentifikovani korisnici mogu da edituju knjige!")
+
+    db_sess = db_session.create_session()
+    book = db_sess.query(Book).filter(Book.id == book_id).first()
+    if book is None:
+        return render_template("add_book.html",
+                               quote=g.quote["quote"],
+                               author=g.quote["author"],
+                               title="Editovanje knjige",
+                               search_form=g.search_form,
+                               book_form=edit_form,
+                               answer="Knjiga sa datim id ne postoji!")
+
+    if request.method == "GET":
+        edit_form.title.data = book.title
+        edit_form.author_name.data = book.author.name
+        edit_form.description.data = book.description
+        edit_form.year.data = book.year
+        edit_form.grade.data = book.grade
+
+    if edit_form.validate_on_submit():
+        author = db_sess.query(Author).filter(Author.name == edit_form.author_name.data).first()
+
+        book.title = edit_form.title.data
+        book.author_id = author.id
+        book.description = edit_form.description.data
+        book.year = edit_form.year.data
+        book.grade = edit_form.grade.data
+        book.author = author
+
+        db_sess.commit()
+
+        app.tokens_index = {}
+        books = db_sess.query(Book).all()
+        for b in books:
+            app.tokens_index[b.id] = tokenize(b.title) | tokenize(b.author.name)
+        return redirect(f"/library/{book.id}")
+
+    return render_template("add_book.html",
+                           quote=g.quote["quote"],
+                           author=g.quote["author"],
+                           title="Editovanje knjige",
+                           search_form=g.search_form,
+                           book_form=edit_form,
+                           answer="")
 
 
 @app.route('/')
@@ -321,8 +377,8 @@ def main() -> None:
 
     # books and authors tokens for search
     books = db_sess.query(Book).all()
-    for book in books:
-        app.tokens_index[book.id] = tokenize(book.title) | tokenize(book.author.name)
+    for b in books:
+        app.tokens_index[b.id] = tokenize(b.title) | tokenize(b.author.name)
 
     # getting dicts of 5 books of every grade from 1 to 4
     app.main_page_books = [

@@ -3,8 +3,14 @@
 {% block content %}
 <link rel="stylesheet" href="../static/css/add_book.css">
 
-<h1 class="admin-txt">Dodavanje knjige</h1>
-{% if answer %}
+<h1 class="admin-txt">
+    {{ title }}
+</h1>
+{% if title == "Editovanje knjige" %}
+<h2 style="color: white; text-align: center">{{ book_form.title.data }}</h2>
+{% endif %}
+
+{% if answer == "" %}
     <form action="" method="POST" class="book-form" enctype="multipart/form-data">
         {{ book_form.hidden_tag() }}
         <div class="left">
@@ -72,19 +78,20 @@
                     {% endfor %}
                 </div>
             </div>
-
-            <div class="input-field">
-                <div class="input-bar-cont">
-                    <div class="input-bar">
-                        {{ book_form.file(class="form-control", placeholder="Fajl") }}
-                    </div>
-                    {% for error in book_form.file.errors %}
-                        <div class="alert alert-danger" role="alert">
-                            {{ error }}
+            {% if title == "Dodavanje knjige" %}
+                <div class="input-field">
+                    <div class="input-bar-cont">
+                        <div class="input-bar">
+                            {{ book_form.file(class="form-control", placeholder="Fajl") }}
                         </div>
-                    {% endfor %}
+                        {% for error in book_form.file.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
-            </div>
+            {% endif %}
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     <ul class="alert-list">
@@ -101,6 +108,6 @@
         </div>
     </form>
 {% else %}
-    <p style="color: red; text-align: center">Samo autentifikovani korisnici mogu da dodaju knjige!</p>
+    <p style="color: red; text-align: center">{{ answer }}</p>
 {% endif %}
 {% endblock %}
