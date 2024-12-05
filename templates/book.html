@@ -18,6 +18,12 @@
         </div>
 
         <a href="../uploads/books/{{ book.path }}" class="download-btn">Download</a>
+        {% if current_user.is_authenticated %}
+
+        <a href="../edit/{{ book.id }}" style="background-color: orange;"class="download-btn">Edit</a>
+        <a href="../delete/{{ book.id }}" style="background-color: red;" class="download-btn">Delete</a>
+
+        {% endif %}
     </div>
 
     <div class="preview">
