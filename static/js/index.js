@@ -1,9 +1,13 @@
+// smooth scrolling
+const button = document.getElementById('scrollButton');
+const target = document.getElementById('lektire');
+
+button.addEventListener('click', function() {
+    target.scrollIntoView({ behavior: 'smooth' });
+});
+
 let text = document.getElementById('books').getAttribute('data');
 
-text = text.replace('to " biografske duse ".', 'to biografske duse.');
-text = text.replace('Viljema Šekspira, \'Hamlet\' je priča', 'Viljema Šekspira, Hamlet je priča');
-text = text.replace('sumnju. \'Hamlet\' važi', 'sumnju. Hamlet važi');
-text = text.replace('od \'najprestižnijih\' Šekspirovih', 'od najprestižnijih Šekspirovih');
 console.log(text);
 console.log(text.length);
 
