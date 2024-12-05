@@ -25,6 +25,7 @@ app.config["SECRET_KEY"] = conf.SECRET_KEY
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
 app.book_index = {}
+app.main_page_books = []
 api = Api(app)
 
 login_manager = LoginManager()
@@ -214,38 +215,12 @@ def library_book(book_id: str):
 
 @app.route('/')
 def index():
-    db_sess = db_session.create_session()
-
-    # getting 5 books of every grade from 1 to 4 and converting to dict
-    books = [
-        [bookToDict(book) for book in db_sess.query(Book).filter(Book.grade == i).limit(5).all()] for i in range(1, 5)
-    ]
     return render_template("index.html",
                            quote=g.quote["quote"],
                            author=g.quote["author"],
                            title="Online biblioteka",
                            search_form=g.search_form,
-                           books=books)
-
-
-def bookToDict(book: Book) -> dict:
-    author = db_session.create_session().query(
-        Author).filter(Author.id == book.author_id).first()
-    return {
-        "id": book.id,
-        "title": book.title,
-        "uploaded_user_id": book.uploaded_user_id,
-        "author": {
-            "id": author.id,
-            "name": author.name,
-            "description": author.description,
-            "image": author.image
-        },
-        "path": book.path,
-        "description": book.description,
-        "year": book.year,
-        "grade": book.grade,
-    }
+                           books=app.main_page_books)
 
 
 def addBook(book: dict) -> None:
@@ -272,10 +247,15 @@ def addBook(book: dict) -> None:
 
 def main() -> None:
     db_session.global_init("db/library.sqlite")
-    sess = db_session.create_session()
-    books = sess.query(Book).all()
+    db_sess = db_session.create_session()
+    # books = db_sess.query(Book).all()
     # for book in books:
     #    app.book_index[book.id] = tokenize(book.title)
+
+    # getting dicts of 5 books of every grade from 1 to 4
+    app.main_page_books = [
+        [book.to_dict() for book in db_sess.query(Book).filter(Book.grade == i).limit(5).all()] for i in range(1, 5)
+    ]
     app.run(host=HOST, port=PORT, debug=True, threaded=True)
 
 
