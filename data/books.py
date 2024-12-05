@@ -29,5 +29,5 @@ class Book(SqlAlchemyBase):
             "grade": self.grade,
             "uploaded_user_id": self.uploaded_user_id,
             "path": self.path,
-            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+            "created_at": self.created_at.strftime("%d.%m.%Y.")
         }

@@ -1,4 +1,5 @@
-from flask import Flask, render_template, redirect, render_template, redirect, request, render_template_string, g, send_from_directory
+from flask import Flask, render_template, redirect, render_template, redirect, request, render_template_string, g, \
+    send_from_directory
 from flask_login import (LoginManager, login_user,
                          login_required, logout_user, current_user)
 from flask_restful import reqparse, abort, Api, Resource
@@ -10,12 +11,15 @@ from data.authors import Author
 from forms.search import SearchForm
 from forms.user import UserLogInForm, UserSignUpForm
 
-from datetime import datetime, timedelta
+from datetime import timedelta
+import nltk
 from tools.nlp import tokenize
 
 from requests import get as requests_get
 import conf.conf as conf
 import json
+
+nltk.download('punkt_tab', quiet=True)
 
 template_dir = "templates"
 static_dir = "static"
@@ -24,7 +28,7 @@ app.json.sort_keys = False
 app.config["SECRET_KEY"] = conf.SECRET_KEY
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
 
-app.book_index = {}
+app.tokens_index = {}
 app.main_page_books = []
 api = Api(app)
 
@@ -66,7 +70,7 @@ def handle_search():
 
     g.search_form = SearchForm()
     if g.search_form.validate_on_submit():
-        return redirect(f"http://{HOST}:{PORT}/search/{g.search_form.search.data}")
+        return redirect(f"/search/{g.search_form.search.data}")
 
 
 @app.route('/logout')
@@ -152,23 +156,25 @@ def sign_up():
     )
 
 
-@app.route('/search/<string:search>', methods=["GET", "POST"])
+@app.route('/search/<string:search_text>', methods=["GET", "POST"])
 def search(search_text: str):
     ids = []
     search_token = tokenize(search_text)
-    for article_id, book_token in app.book_index.items():
-        num_matching_words = len(search_token & book_token)
+
+    for book_id, token in app.tokens_index.items():
+        num_matching_words = len(search_token & token)
         if num_matching_words > 0:
-            ids.append((article_id, num_matching_words))
+            ids.append((book_id, num_matching_words))
+
     ids.sort(key=lambda x: x[1], reverse=True)
     ids = [i[0] for i in ids]
 
     sess = db_session.create_session()
-    articles = sess.query(Book).filter(Book.id.in_(ids)).all()
-    return render_template("search_results.html",
+    search_results = sess.query(Book).filter(Book.id.in_(ids)).all()
+    return render_template("search.html",
                            quote=g.quote["quote"],
                            author=g.quote["author"],
-                           articles=articles,
+                           search_results=search_results,
                            search_form=g.search_form)
 
 
@@ -189,18 +195,14 @@ def library_book(book_id: str):
     book = db_sess.query(Book).filter(Book.id == book_id).first()
     if book is None:
         return render_template("book.html",
-
                                quote=g.quote["quote"],
                                author=g.quote["author"],
-
                                answer=False,
                                search_form=g.search_form)
-    book_dict = bookToDict(book)
+    book_dict = book.to_dict()
     return render_template("book.html",
-
                            quote=g.quote["quote"],
                            author=g.quote["author"],
-
                            answer=True,
                            book=book_dict,
                            search_form=g.search_form)
@@ -246,9 +248,11 @@ def addBook(book: dict) -> None:
 def main() -> None:
     db_session.global_init("db/library.sqlite")
     db_sess = db_session.create_session()
-    # books = db_sess.query(Book).all()
-    # for book in books:
-    #    app.book_index[book.id] = tokenize(book.title)
+
+    # books and authors tokens for search
+    books = db_sess.query(Book).all()
+    for book in books:
+        app.tokens_index[book.id] = tokenize(book.title) | tokenize(book.author.name)
 
     # getting dicts of 5 books of every grade from 1 to 4
     app.main_page_books = [

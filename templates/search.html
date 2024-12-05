@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main">
+    <h1>Search results</h1>
+    {% if search_results %}
+        {% for book in search_results %}
+            <div class="col-md6 border rounded">
+                <a href="/library/{{ book.id }}">{{book.title}}</a> - {{book.author.name}} ({{ book.year }})
+                <br>
+                {{ book.description[:110].strip() + "..." }}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="">Ništa nije pronađeno. Pokušajte sa drugim zahtevtom.</div>
+    {% endif %}
+</div>
+{% endblock %}
