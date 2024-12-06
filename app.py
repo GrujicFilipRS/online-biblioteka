@@ -341,12 +341,13 @@ def edit(book_id: int):
 
 @app.route('/delete/<int:book_id>', methods=["GET", "POST"])
 def delete(book_id: int):
-    db_sess = db_session.create_session()
-    book = db_sess.query(Book).filter(Book.id == book_id).first()
-    if book:
-        db_sess.delete(book)
-        db_sess.commit()
-    return redirect("/")
+    if current_user.is_authenticated:
+        db_sess = db_session.create_session()
+        book = db_sess.query(Book).filter(Book.id == book_id).first()
+        if book:
+            db_sess.delete(book)
+            db_sess.commit()
+        return redirect("/")
 
 
 @app.route('/')
